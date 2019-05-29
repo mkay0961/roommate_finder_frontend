@@ -1,8 +1,10 @@
 import React, { Component } from 'react'
 import { Link } from 'react-router-dom'
-import { Button, Form, Grid, Header, Message, Segment } from 'semantic-ui-react'
+import { Button, Form } from 'semantic-ui-react'
 import Toaster from 'toasted-notes'
 import 'toasted-notes/src/styles.css'
+import { loginUser } from '../redux/actions/user'
+import { connect } from 'react-redux'
 
 
 class Login extends Component {
@@ -31,9 +33,10 @@ class Login extends Component {
     e.preventDefault()
 
     const { username, password } = this.state
+    const { loginUser } = this.props
 
     if(username !== "" && password !== ""){
-      console.log(username, password);
+      loginUser(username, password)
     }else{
       if(username === "") {
         Toaster.notify('**Please enter a username**', {
@@ -55,58 +58,42 @@ class Login extends Component {
   render() {
     return (
       <div >
-        <Grid textAlign='center' style={{ height: '100vh' }} verticalAlign='middle'>
-          <Grid.Column style={{ maxWidth: 450 }}>
-            <Header as='h2' color='teal' textAlign='center'>
-              Log-in to your account
-            </Header>
-            <Form size='large'>
-              <Segment stacked>
-                <Form.Input fluid
-                            onChange={(e)=>{this.onHandleChange(e)}}
-                            name="username"
-                            icon='user'
-                            iconPosition='left'
-                            placeholder='Username' />
+        <Form.Input fluid
+                    onChange={(e)=>{this.onHandleChange(e)}}
+                    name="username"
+                    icon='user'
+                    iconPosition='left'
+                    placeholder='Username' />
 
-                <Form.Input fluid
-                            onChange={(e)=>{this.onHandleChange(e)}}
-                            icon='lock'
-                            name="password"
-                            iconPosition='left'
-                            placeholder='Password'
-                            type='password'
-                />
+        <Form.Input fluid
+                    onChange={(e)=>{this.onHandleChange(e)}}
+                    icon='lock'
+                    name="password"
+                    iconPosition='left'
+                    placeholder='Password'
+                    type='password' />
 
-                <Button color='orange' fluid size='large' onClick={(e)=>{this.handleSubmitClick(e)}}>
-                    Login
-                </Button>
-              </Segment>
-            </Form>
-            <Message>
-              New to us?
-              <Link to="/signup">
-                <Button>Sign Up</Button>
-              </Link>
-            </Message>
-          </Grid.Column>
-        </Grid>
+      <Button color='orange' fluid size='large' onClick={(e)=>{this.handleSubmitClick(e)}}>
+          Login
+      </Button>
 
-
+      <Link to="/signup">
+        <Button>Sign Up</Button>
+      </Link>
 
     </div>
 
     )
   }
 }
-// const mapDispatchToProps = dispatch => {
-//   return {
-//     loginUser: (username, password)=>{dispatch(loginUser(username, password))}
-//     }
-// }
-//
-// const mapStateToProps = state =>({
-//   user: state.user
-// })
+const mapDispatchToProps = dispatch => {
+  return {
+    loginUser: (username, password)=>{dispatch(loginUser(username, password))}
+    }
+}
 
-export default (Login)
+const mapStateToProps = state =>({
+  user: state.user
+})
+
+export default connect(mapStateToProps, mapDispatchToProps)(Login)
